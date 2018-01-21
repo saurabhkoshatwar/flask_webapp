@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def hello():
-    return "<h1>1st Flask App !!!!</h1>"
+    return "<h1>First Flask App !!!!</h1>"
 
 
 if __name__ == '__main__':
