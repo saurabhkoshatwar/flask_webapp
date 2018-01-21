@@ -1,1 +1,3 @@
 flask/
+cred.ini
+__pycache__
