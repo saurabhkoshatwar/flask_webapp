@@ -20,3 +20,9 @@ def dbtest(id):
 	print(rows)
 	for row in rows:
 		return row[0]
+
+def email_already_exists(email):
+	cur = conn.cursor()
+	cur.execute('''SELECT * from s_details WHERE email=+\'%s\'''', (email))
+	if cur.rowcount<=0:
+		return False
