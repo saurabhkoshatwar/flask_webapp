@@ -17,9 +17,21 @@ def tester(id):
 @app.route('/api/v1/signup/student', methods=['POST'])
 def signup_handler():
     data = request.get_json()
-    print(data)
-    return student_auth.sign_up(data["name"], data["email"], data["password"])
+    # print(data)
+    try:
+        return student_auth.sign_up(data["name"], data["email"], data["password"])
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
 
+
+@app.route('/api/v1/login/student', methods=["POST"])
+def login_handler():
+    data = request.get_json()
+    # print(data)
+    try:
+        return student_auth.login(data['email'], data['password'])
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
 
 if __name__ == '__main__':
     app.run(debug=True)

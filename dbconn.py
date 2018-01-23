@@ -64,6 +64,26 @@ def sign_up(name, email, password):
         conn.commit()
         print('Inserted!')
     except:
-        api_key=None
+        api_key = None
     conn.close()
+    return api_key
+
+
+def login(email, hashed_password):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    api_key = None
+    cur = conn.cursor()
+    cur.execute("SELECT api_key from s_details WHERE email='{0}' AND pass='{1}'".format(email, hashed_password))
+    if cur.rowcount == 1:
+        row = cur.fetchone()
+        print(row[0])
+        api_key=row[0]
+        conn.close()
+
     return api_key
