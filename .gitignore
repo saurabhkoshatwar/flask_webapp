@@ -2,3 +2,4 @@ flask/
 .vscode/
 __pycache__/
 start.sh
+.idea/
