@@ -13,10 +13,11 @@ conn = psycopg2.connect(
     port=url.port
 )
 
+
 def dbtest(id):
-	cur = conn.cursor()
-	cur.execute('SELECT name from test WHERE id='+str(id))
-	rows = cur.fetchall()
-	print(rows)
-	for row in rows:
-		return row[0]
+    cur = conn.cursor()
+    cur.execute('SELECT name from test WHERE id=' + str(id))
+    rows = cur.fetchall()
+    print(rows)
+    for row in rows:
+        return row[0]
