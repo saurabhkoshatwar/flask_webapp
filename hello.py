@@ -14,12 +14,12 @@ def tester(id):
     return (dbconn.dbtest(id))
 
 
-@app.route('/api/v1/signup/student', methods=['PUT'])
+@app.route('/api/v1/signup/student', methods=['POST'])
 def signup_handler():
-    name = request.args.get('name')
-    email = request.args.get('email')
-    password = request.args.get('password')
-    print(name, email, password)
+    name = request.form.get("name")
+    email = request.form.get("email")
+    password = request.form.get("password")
+    print(name,email,password)
     return signup.sign_up(name, email, password)
 
 
