@@ -16,12 +16,10 @@ def tester(id):
 
 @app.route('/api/v1/signup/student', methods=['POST'])
 def signup_handler():
-    name = request.form.get("name")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    print(name,email,password)
-    return signup.sign_up(name, email, password)
+    data = request.get_json()
+    print("name"+data["name"]+"email"+data['email']+"password"+data["password"])
+    return signup.sign_up(data["name"], data["email"], data["password"])
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
