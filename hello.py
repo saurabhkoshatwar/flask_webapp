@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import dbconn, signup
+import dbconn, student_auth
 
 app = Flask(__name__)
 
@@ -11,14 +11,14 @@ def hello():
 
 @app.route('/api/v1/test/<int:id>', methods=['GET'])
 def tester(id):
-    return (dbconn.dbtest(id))
+    return dbconn.dbtest(id)
 
 
 @app.route('/api/v1/signup/student', methods=['POST'])
 def signup_handler():
     data = request.get_json()
     print(data)
-    return (signup.sign_up(data["name"], data["email"], data["password"]))
+    return student_auth.sign_up(data["name"], data["email"], data["password"])
 
 
 if __name__ == '__main__':

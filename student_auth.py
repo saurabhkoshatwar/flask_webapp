@@ -17,3 +17,6 @@ def sign_up(name, email, password):
         else:
             res = jsonify(status="Failed", message="Try Again!")
         return res
+
+def login():
+    pass
