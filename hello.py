@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import dbconn, student_auth
+import dbconn, student_auth, json_gen
 
 app = Flask(__name__)
 
@@ -32,6 +32,14 @@ def login_handler():
         return student_auth.login(data['email'], data['password'])
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+
+
+@app.route('/api/v1/get_timetable/', methods=['GET'])
+def get_timetable():
+    date = request.args.get('date')
+    shift = request.args.get('shift')
+    batch = request.args.get('batch')
+    return json_gen.generate(date, shift, batch)
 
 if __name__ == '__main__':
     app.run(debug=True)

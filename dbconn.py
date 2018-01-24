@@ -87,3 +87,11 @@ def login(email, hashed_password):
         conn.close()
 
     return api_key
+
+
+def get_tt(day, shift, batch):
+    weekday_num = datetime.strptime(date, '%Y-%m-%d').weekday()
+    print(weekday_num)
+    weekday = week[weekday_num]
+    print(weekday)
+    pass
