@@ -1,7 +1,4 @@
-import datetime, dbconn
-
-week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-        'Thursday',  'Friday', 'Saturday']
+import dbconn
 
 
 def generate(date, shift, batch):

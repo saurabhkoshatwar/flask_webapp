@@ -1,4 +1,4 @@
-import os, string, random
+import os, string, random, datetime
 from urllib import parse
 import psycopg2
 
@@ -89,7 +89,9 @@ def login(email, hashed_password):
     return api_key
 
 
-def get_tt(day, shift, batch):
+def get_tt(date, shift, batch):
+    week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+            'Thursday', 'Friday', 'Saturday']
     weekday_num = datetime.strptime(date, '%Y-%m-%d').weekday()
     print(weekday_num)
     weekday = week[weekday_num]
