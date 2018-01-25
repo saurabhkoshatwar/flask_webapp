@@ -107,5 +107,8 @@ def get_tt(date, shift, batch):
     cur = conn.cursor()
     cur.execute("SELECT start_time, end_time, teacher, subject, room from time_table WHERE day ='{0}' AND shift='{1}' AND batch='{2}'".format(weekday, shift, batch))
     rows = cur.fetchall()
+    for row in rows:
+        print(row)
+        pass
     conn.close()
-    return rows
+    return
