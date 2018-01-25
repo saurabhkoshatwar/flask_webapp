@@ -90,10 +90,22 @@ def login(email, hashed_password):
 
 
 def get_tt(date, shift, batch):
-    week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-            'Thursday', 'Friday', 'Saturday']
-    weekday_num = datetime.strptime(date, '%Y-%m-%d').weekday()
+    week = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY',
+            'THRUSDAY', 'FRIDAY', 'SATURDAY']
+    print(datetime.datetime.strptime(date, '%Y-%m-%d'))
+    weekday_num = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
     print(weekday_num)
-    weekday = week[weekday_num]
+    weekday = week[(weekday_num+1)%7]
     print(weekday)
-    pass
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT start_time, end_time, teacher, subject, room from time_table WHERE day ='{0}' AND shift='{1}' AND batch='{2}'".format(weekday, shift, batch))
+    rows = cur.fetchall()
+    conn.close()
+    return rows

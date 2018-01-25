@@ -36,10 +36,12 @@ def login_handler():
 
 @app.route('/api/v1/get_timetable/', methods=['GET'])
 def get_timetable():
-    date = request.args.get('date')
-    shift = request.args.get('shift')
-    batch = request.args.get('batch')
+    date = request.headers['date']
+    shift = request.headers['shift']
+    batch = request.headers['batch']
+    print(date)
     return json_gen.generate(date, shift, batch)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
