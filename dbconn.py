@@ -87,3 +87,22 @@ def login(email, hashed_password):
         conn.close()
 
     return api_key
+
+def forgot(email,password):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE s_details set pass='{0}' where email='{1}'".format(password, email))
+        conn.commit()
+        status = "password Updated"
+    except:
+        status = "password updating failed"
+    conn.close()
+    return status
+
