@@ -5,7 +5,7 @@ from wtforms import PasswordField
 
 from wtforms.validators import DataRequired
 
-import dbconn, student_auth,hash,os,re
+import dbconn, student_auth,hash,os,re,json_gen
 from flask_mail import Mail,Message
 from itsdangerous import URLSafeTimedSerializer
 
@@ -112,5 +112,15 @@ def reset_with_token(token):
     return render_template('reset_password_with_token.html', form=form, token=token)
 
    
+
+@app.route('/api/v1/get_timetable/', methods=['GET'])
+def get_timetable():
+    date = request.headers['date']
+    shift = request.headers['shift']
+    batch = request.headers['batch']
+    print(date)
+    return json_gen.generate(date, shift, batch)
+
+
 if __name__ == '__main__':
     app.run()

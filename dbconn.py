@@ -1,4 +1,4 @@
-import os, string, random
+import os, string, random, datetime
 from urllib import parse
 import psycopg2
 
@@ -88,6 +88,32 @@ def login(email, hashed_password):
 
     return api_key
 
+
+def get_tt(date, shift, batch):
+    week = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY',
+            'THRUSDAY', 'FRIDAY', 'SATURDAY']
+    print(datetime.datetime.strptime(date, '%Y-%m-%d'))
+    weekday_num = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
+    print(weekday_num)
+    weekday = week[(weekday_num+1)%7]
+    print(weekday)
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT start_time, end_time, teacher, subject, room from time_table WHERE day ='{0}' AND shift='{1}' AND batch='{2}'".format(weekday, shift, batch))
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+        pass
+    conn.close()
+    return
+
+
 def forgot(email,password):
     conn = psycopg2.connect(
         database=url.path[1:],
@@ -105,4 +131,3 @@ def forgot(email,password):
         status = "password updating failed"
     conn.close()
     return status
-
