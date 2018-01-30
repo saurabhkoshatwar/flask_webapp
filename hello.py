@@ -115,10 +115,12 @@ def reset_with_token(token):
 
 @app.route('/api/v1/get_timetable/', methods=['GET'])
 def get_timetable():
-    date = request.args.get('date')
-    shift = request.args.get('shift')
-    batch = request.args.get('batch')
-    print(date)
+    try:
+        date = request.args['date']
+        shift = request.args['shift']
+        batch = request.args['batch']
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
     generated_json = json_gen.generate(date, shift, batch)
     print(type(generated_json))
     return jsonify(status="Successful", result_set=generated_json)
