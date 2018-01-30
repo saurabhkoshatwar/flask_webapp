@@ -1,5 +1,6 @@
-import os, string, random, datetime
+import os, string, random, datetime, json
 from urllib import parse
+from flask import jsonify
 import psycopg2
 
 parse.uses_netloc.append("postgres")
@@ -96,7 +97,7 @@ def get_tt(date, shift, batch):
     weekday_num = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
     # print(weekday_num)
     weekday = week[(weekday_num+1)%7]
-    # print(weekday)
+    print(weekday)
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -105,17 +106,41 @@ def get_tt(date, shift, batch):
         port=url.port
     )
     cur = conn.cursor()
-    cur.execute("SELECT start_time, end_time, teacher, subject, room from time_table WHERE day ='{0}' AND shift='{1}' AND batch='{2}'".format(weekday, shift, batch))
-    rows = cur.fetchall()
-    print("yo +++++++++++++>>>>>>>>> \n", rows)
-    for row in rows:
-        print(row)
-        pass
+    cur.execute("SELECT id, start_time, end_time, subject, teacher, room from time_table WHERE day ='{0}' AND shift='{1}' AND (batch='{2}' OR batch='-') ORDER BY id".format(weekday, shift, batch))
+    regular_tt = cur.fetchall()
+    print("yo +++++++++++++>>>>>>>>> \n", regular_tt)
+    ids_to_check = tuple()
+    for row in regular_tt:
+        ids_to_check = ids_to_check+(row[0], )
+
+    cur.execute("SELECT id_ptr, subject, teacher, room from changes WHERE chg_date ='{0}' AND id_ptr IN {1} ORDER BY id".format(
+            date, ids_to_check))
+    changes = cur.fetchall()
     conn.close()
-    return
+
+    final_list = list()
+    for reg_row in regular_tt:
+        to_switch = False
+        for changed_row in changes:
+            if reg_row[0] == changed_row[0]:
+                to_switch = True
+                break
+        if to_switch:
+            j = {"Start Date": str(reg_row[1])[:5], "End Date": str(reg_row[2])[:5], "Subject": changed_row[1],
+                            "Teacher": changed_row[2], "Room": changed_row[3], "Changed":1}
+            #print(j)
+            final_list.append(j)
+        else:
+            j = {"Start Date": str(reg_row[1])[:5], "End Date": str(reg_row[2])[:5],
+                            "Subject": reg_row[3], "Teacher": reg_row[4], "Room": reg_row[5], "Changed":0}
+            #print(type(j))
+            final_list.append(j)
+
+    print(final_list)
+    return final_list
 
 
-def forgot(email,password):
+def forgot(email, password):
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,

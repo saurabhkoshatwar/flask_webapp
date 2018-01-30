@@ -119,7 +119,9 @@ def get_timetable():
     shift = request.args.get('shift')
     batch = request.args.get('batch')
     print(date)
-    return json_gen.generate(date, shift, batch)
+    generated_json = json_gen.generate(date, shift, batch)
+    print(type(generated_json))
+    return jsonify(status="Successful", result_set=generated_json)
 
 
 if __name__ == '__main__':
