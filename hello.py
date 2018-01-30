@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request ,render_template,url_for,flash
+from flask import Flask, jsonify, request, render_template, url_for, flash
 from flask_wtf import form, Form
 from wtforms import PasswordField
 
@@ -115,9 +115,9 @@ def reset_with_token(token):
 
 @app.route('/api/v1/get_timetable/', methods=['GET'])
 def get_timetable():
-    date = request.headers['date']
-    shift = request.headers['shift']
-    batch = request.headers['batch']
+    date = request.args.get('date')
+    shift = request.args.get('shift')
+    batch = request.args.get('batch')
     print(date)
     return json_gen.generate(date, shift, batch)
 
