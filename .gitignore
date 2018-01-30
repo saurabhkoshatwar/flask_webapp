@@ -1,8 +1,5 @@
 flask/
 .vscode/
 __pycache__/
-<<<<<<< HEAD
-=======
 start.sh
 .idea/
->>>>>>> Dev

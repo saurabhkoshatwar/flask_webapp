@@ -16,8 +16,6 @@ url = parse.urlparse(os.environ["DATABASE_URL"])
 
 
 def dbtest(id):
-<<<<<<< HEAD
-=======
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -25,15 +23,12 @@ def dbtest(id):
         host=url.hostname,
         port=url.port
     )
->>>>>>> Dev
     cur = conn.cursor()
     cur.execute('SELECT name from test WHERE id=' + str(id))
     rows = cur.fetchall()
     print(rows)
     for row in rows:
         return row[0]
-<<<<<<< HEAD
-=======
     conn.close()
 
 
@@ -138,4 +133,3 @@ def forgot(email,password):
         status = "password updating failed"
     conn.close()
     return status
->>>>>>> Dev
