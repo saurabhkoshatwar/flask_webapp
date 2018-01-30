@@ -1,6 +1,5 @@
-import os, string, random, datetime, json
+import os, string, random, datetime
 from urllib import parse
-from flask import jsonify
 import psycopg2
 
 parse.uses_netloc.append("postgres")
@@ -92,10 +91,8 @@ def login(email, hashed_password):
 
 def get_tt(date, shift, batch):
     week = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY',
-            'THRUSDAY', 'FRIDAY', 'SATURDAY']
-    # print(datetime.datetime.strptime(date, '%Y-%m-%d'))
+            'THURSDAY', 'FRIDAY', 'SATURDAY']
     weekday_num = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
-    # print(weekday_num)
     weekday = week[(weekday_num+1)%7]
     print(weekday)
     conn = psycopg2.connect(
@@ -128,12 +125,10 @@ def get_tt(date, shift, batch):
         if to_switch:
             j = {"Start Date": str(reg_row[1])[:5], "End Date": str(reg_row[2])[:5], "Subject": changed_row[1],
                             "Teacher": changed_row[2], "Room": changed_row[3], "Changed":1}
-            #print(j)
             final_list.append(j)
         else:
             j = {"Start Date": str(reg_row[1])[:5], "End Date": str(reg_row[2])[:5],
                             "Subject": reg_row[3], "Teacher": reg_row[4], "Room": reg_row[5], "Changed":0}
-            #print(type(j))
             final_list.append(j)
 
     print(final_list)
