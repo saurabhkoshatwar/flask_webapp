@@ -38,7 +38,7 @@ def signup_handler():
     try:
         return student_auth.sign_up(data["name"], data["email"], data["password"])
     except:
-        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 
 
@@ -49,7 +49,7 @@ def login_handler():
     try:
         return student_auth.login(data['email'], data['password'])
     except:
-        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 def send_email(subject,recipients,html_body):
     msg = Message(subject, recipients=recipients)
@@ -120,10 +120,10 @@ def get_timetable():
         shift = request.args['shift']
         batch = request.args['batch']
     except:
-        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
     generated_json = json_gen.generate(date, shift, batch)
     print(type(generated_json))
-    return jsonify(status="Successful", result_set=generated_json)
+    return jsonify(status=1, result_set=generated_json)
 
 
 if __name__ == '__main__':
