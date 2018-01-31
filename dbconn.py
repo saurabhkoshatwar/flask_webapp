@@ -105,6 +105,8 @@ def get_tt(date, shift, batch):
     cur = conn.cursor()
     cur.execute("SELECT id, start_time, end_time, subject, teacher, room from time_table WHERE day ='{0}' AND shift='{1}' AND (batch='{2}' OR batch='-') ORDER BY id".format(weekday, shift, batch))
     regular_tt = cur.fetchall()
+    if not regular_tt:
+        return list(), 0
     print("yo +++++++++++++>>>>>>>>> \n", regular_tt)
     ids_to_check = tuple()
     for row in regular_tt:
@@ -132,7 +134,7 @@ def get_tt(date, shift, batch):
             final_list.append(j)
 
     print(final_list)
-    return final_list
+    return final_list, 1
 
 
 def forgot(email, password):
