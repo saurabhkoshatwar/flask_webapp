@@ -121,10 +121,11 @@ def get_timetable():
         batch = request.args['batch']
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
-    generated_json = json_gen.generate(date, shift, batch)
-    print(type(generated_json))
-    return jsonify(status=1, result_set=generated_json)
-
+    list1, status = json_gen.generate(date, shift, batch)
+    if not status:
+        return jsonify(status=status, msg="No data found!")
+    else:
+        return jsonify(status=status, result_set=list1), 400
 
 if __name__ == '__main__':
     app.run()
