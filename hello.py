@@ -123,9 +123,9 @@ def get_timetable():
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
     list1, status = json_gen.generate(date, shift, batch)
     if not status:
-        return jsonify(status=status, msg="No data found!")
+        return jsonify(status=status, msg="No data found!"), 400
     else:
-        return jsonify(status=status, result_set=list1), 400
+        return jsonify(status=status, result_set=list1), 200
 
 if __name__ == '__main__':
     app.run()
