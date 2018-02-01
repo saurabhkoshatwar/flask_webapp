@@ -5,7 +5,7 @@ from wtforms import PasswordField
 
 from wtforms.validators import DataRequired
 
-import dbconn, student_auth,hash,os,re,json_gen
+import dbconn, student_auth,hash,os,re,json_gen, redis_updater
 from flask_mail import Mail,Message
 from itsdangerous import URLSafeTimedSerializer
 
@@ -38,7 +38,7 @@ def signup_handler():
     try:
         return student_auth.sign_up(data["name"], data["email"], data["password"])
     except:
-        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 
 
@@ -49,7 +49,7 @@ def login_handler():
     try:
         return student_auth.login(data['email'], data['password'])
     except:
-        return jsonify(status=0, message='Missing fields!/Error Occured! :/')
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 def send_email(subject,recipients,html_body):
     msg = Message(subject, recipients=recipients)
@@ -115,12 +115,26 @@ def reset_with_token(token):
 
 @app.route('/api/v1/get_timetable/', methods=['GET'])
 def get_timetable():
-    date = request.args.get('date')
-    shift = request.args.get('shift')
-    batch = request.args.get('batch')
-    print(date)
-    return json_gen.generate(date, shift, batch)
+    try:
+        date = request.args['date']
+        shift = request.args['shift']
+        batch = request.args['batch']
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
+    list1, status = json_gen.generate(date, shift, batch)
+    if not status:
+        return jsonify(status=status, msg="No data found!"), 400
+    else:
+        return jsonify(status=status, result_set=list1), 200
 
+@app.route('/api/v1/update_cache/', methods=['POST'])
+def update_cache():
+    try:
+        date = request.form.get('date')
+        redis_updater.cache_to_redis(date)
+        return jsonify(status=1), 200
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 if __name__ == '__main__':
     app.run()

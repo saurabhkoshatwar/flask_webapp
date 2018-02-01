@@ -5,5 +5,5 @@ def generate(date, shift, batch):
     print('date:' + date)
     print('shift:' + shift)
     print('batch:' + batch)
-    dbconn.get_tt(date, shift, batch)
-    pass
+    generated_json = dbconn.get_tt(date, shift, batch)
+    return generated_json
