@@ -9,11 +9,11 @@ def cache_to_redis(date):
     batches = ['A', 'B', 'C', 'D']
     for shift in shifts:
         for batch in batches:
-            time_table, status = dbconn.get_tt('2018-01-29', 'I', 'A')
+            time_table, status = dbconn.get_tt(date, shift, batch)
             if status:
                 final_json = {"status": status, "result_set": time_table}
-                r.set(str(date)+shift+batch, final_json)
-                r.expire(name=str(date)+shift+batch, time=90000)
+                r.set(str(date)+'-'+shift+'-'+batch, final_json)
+                r.expire(name=str(date)+'-'+shift+'-'+batch, time=90000)
 
 
 
