@@ -4,7 +4,7 @@ REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
 def cache_to_redis(date):
     r = redis.StrictRedis(host="redis-18388.c1.ap-southeast-1-1.ec2.cloud.redislabs.com", port="18388",
-                          decode_responses=True, password=REDIS_PASSWORD, socket_timeout=30, connection_pool=None)
+                          decode_responses=True, password=REDIS_PASSWORD, socket_timeout=60, connection_pool=None)
     shifts = ['I', 'II']
     batches = ['A', 'B', 'C', 'D']
     for shift in shifts:
