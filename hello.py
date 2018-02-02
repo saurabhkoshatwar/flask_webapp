@@ -130,8 +130,8 @@ def get_timetable():
 @app.route('/api/v1/update_cache/', methods=['POST'])
 def update_cache():
     try:
-        date = request.form.get('date')
-        redis_updater.cache_to_redis(date)
+        data = request.get_json()
+        redis_updater.cache_to_redis(data['date'])
         return jsonify(status=1), 200
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
