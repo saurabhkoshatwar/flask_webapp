@@ -5,7 +5,7 @@ from wtforms import PasswordField
 
 from wtforms.validators import DataRequired
 
-import dbconn, student_auth,hash,os,re,json_gen
+import dbconn, student_auth,hash,os,re,json_gen, redis_updater
 from flask_mail import Mail,Message
 from itsdangerous import URLSafeTimedSerializer
 
@@ -123,9 +123,18 @@ def get_timetable():
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
     list1, status = json_gen.generate(date, shift, batch)
     if not status:
-        return jsonify(status=status, msg="No data found!")
+        return jsonify(status=status, msg="No data found!"), 400
     else:
-        return jsonify(status=status, result_set=list1), 400
+        return jsonify(status=status, result_set=list1), 200
+
+@app.route('/api/v1/update_cache/', methods=['POST'])
+def update_cache():
+    try:
+        data = request.get_json()
+        redis_updater.cache_to_redis(data['date'])
+        return jsonify(status=1), 200
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
 if __name__ == '__main__':
     app.run()
