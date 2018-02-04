@@ -94,7 +94,7 @@ def get_tt(date, shift, batch):
             'THURSDAY', 'FRIDAY', 'SATURDAY']
     weekday_num = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
     weekday = week[(weekday_num+1)%7]
-    print(weekday)
+    #print(weekday)
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -154,3 +154,91 @@ def forgot(email, password):
         status = "password updating failed"
     conn.close()
     return status
+
+
+def get_id_ptr(shift, day, start_time, batch):
+
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        #SELECT id_ptr from time_table WHERE  start_time='10:30:00' AND day='MONDAY' AND shift='I' AND batch='C'
+        cur.execute("SELECT id from time_table WHERE  start_time='{0}' AND day='{1}' AND shift='{2}' AND batch='{3}'".format(start_time, day, shift, batch))
+        id_ptr = cur.fetchall()
+
+        status = "password Updated"
+        conn.close()
+        return id_ptr[0][0]
+    except:
+        status = "failed"
+    conn.close()
+    return -1
+
+
+def find_previous_change(id_ptr,date):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        # SELECT * from changes WHERE  chg_date='2018-01-29' AND id_ptr='3'
+        # print("insdide")
+        cur.execute("SELECT * from changes WHERE  chg_date='{0}' AND id_ptr='{1}'".format(date, id_ptr))
+        previous_change = cur.fetchall()
+        conn.close()
+        return list(previous_change)
+    except:
+        print("failed in db_query")
+    conn.close()
+    return -1
+
+
+def delete_previous_change(delete_id):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        # delete from changes where id='1';
+        cur.execute("delete from changes where id='{0}'".format(delete_id))
+        conn.commit()
+        conn.close()
+        return ("Success")
+    except:
+        print("failed in deletion")
+    conn.close()
+    return -1
+
+
+def insert_new_change(id_ptr, chg_date, subject, teacher, room):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    try:
+        # INSERT INTO changes (id_ptr, chg_date, subject, teacher, room) VALUES ('7','201-9-12','blah','blurp','555')
+        cur.execute("INSERT INTO changes (id_ptr, chg_date, subject, teacher, room) VALUES ('{0}','{1}','{2}','{3}','{4}')".format(id_ptr, chg_date, subject, teacher, room))
+        conn.commit()
+        print('Inserted!')
+        return "ok"
+    except:
+        api_key = None
+    conn.close()
+    return -1

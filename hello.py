@@ -5,7 +5,7 @@ from wtforms import PasswordField
 
 from wtforms.validators import DataRequired
 
-import dbconn, student_auth,hash,os,re,json_gen, redis_updater
+import dbconn, student_auth,hash,os,re,json_gen, make_change, redis_updater
 from flask_mail import Mail,Message
 from itsdangerous import URLSafeTimedSerializer
 
@@ -133,6 +133,14 @@ def update_cache():
         data = request.get_json()
         redis_updater.cache_to_redis(data['date'])
         return jsonify(status=1), 200
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
+
+@app.route('/api/v1/get_change', methods=['POST'])
+def get_change_in_tt():
+    change_data = request.get_json()
+    try:
+        return make_change.change(change_data['shift'], change_data['date'], change_data['subject'], change_data['teacher'], change_data['room'], change_data['start_time'], change_data['batch'])
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
