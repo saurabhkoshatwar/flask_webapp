@@ -144,5 +144,15 @@ def get_change_in_tt():
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
+@app.route('/api/v1/login/teacher', methods=["POST"])
+def login_teacher():
+    data = request.get_json()
+    try:
+        return student_auth.teacher_login(data['api_key'])
+    except:
+        return jsonify(status=0, message='Error Occured! :/'), 400
+
+
+
 if __name__ == '__main__':
     app.run()

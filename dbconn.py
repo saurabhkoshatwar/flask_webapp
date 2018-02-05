@@ -242,3 +242,25 @@ def insert_new_change(id_ptr, chg_date, subject, teacher, room):
         api_key = None
     conn.close()
     return -1
+
+def t_login(api_key):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    name = None
+    cur = conn.cursor()
+    cur.execute("SELECT name from t_details WHERE api_key='{0}'".format(api_key))
+    if cur.rowcount == 1:
+        row = cur.fetchone()
+        print(row[0])
+        name=row[0]
+        conn.close()
+
+    return name
+
+
+
