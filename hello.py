@@ -65,10 +65,7 @@ def login_handler_teacher():
     except:
         return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
 
-'''def send_email(subject,recipients,html_body):
-    msg = Message(subject, recipients=recipients)
-    msg.html = html_body
-    m.send(msg) '''
+
     
 @app.route('/api/v1/forgot/', methods=["POST"])
 def send_password_reset_email():
@@ -164,6 +161,18 @@ def login_teacher():
         return student_auth.teacher_login(data['api_key'])
     except:
         return jsonify(status=0, message='Error Occured! :/'), 400
+
+@app.route('/api/v1/get_timetable_teacher_today', methods=['GET'])
+def get_timetable_teacher_today():
+    try:
+        initial = request.args['initial']
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
+    list1, status = json_gen.get_timetable_today(initial)
+    if not status:
+        return jsonify(status=status, msg="No data found!"), 400
+    else:
+        return jsonify(status=status, result_set=list1), 200
 
 
 

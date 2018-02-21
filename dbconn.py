@@ -299,3 +299,46 @@ def email_already_exists_teacher(email):
         to_return = True
     conn.close()
     return to_return
+
+
+def get_tt_today(initial):
+    #print(weekday)
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT id, start_time, end_time, subject, teacher, room from time_table WHERE teacher ='{0}' ORDER BY id".format(initial))
+    regular_tt = cur.fetchall()
+    if not regular_tt:
+        return list(), 0
+    print("yo +++++++++++++>>>>>>>>> \n", regular_tt)
+    ids_to_check = tuple()
+    for row in regular_tt:
+        ids_to_check = ids_to_check+(row[0], )
+
+    cur.execute("SELECT id_ptr, subject, teacher, room from changes WHERE id_ptr IN {0} ORDER BY id".format(ids_to_check))
+    changes = cur.fetchall()
+    conn.close()
+
+    final_list = list()
+    for reg_row in regular_tt:
+        to_switch = False
+        for changed_row in changes:
+            if reg_row[0] == changed_row[0]:
+                to_switch = True
+                break
+        if to_switch:
+            j = {"Start Time": str(reg_row[1])[:5], "End Time": str(reg_row[2])[:5], "Subject": changed_row[1],
+                            "Teacher": changed_row[2], "Room": changed_row[3], "Changed":1}
+            final_list.append(j)
+        else:
+            j = {"Start Time": str(reg_row[1])[:5], "End Time": str(reg_row[2])[:5],
+                            "Subject": reg_row[3], "Teacher": reg_row[4], "Room": reg_row[5], "Changed":0}
+            final_list.append(j)
+
+    print(final_list)
+    return final_list, 1
