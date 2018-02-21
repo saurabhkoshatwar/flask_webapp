@@ -302,7 +302,10 @@ def email_already_exists_teacher(email):
 
 
 def get_tt_today(initial):
-    #print(weekday)
+    week = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY',
+            'THURSDAY', 'FRIDAY', 'SATURDAY']
+    weekday_num = datetime.datetime.now().weekday()
+    weekday = week[(weekday_num+1)%7]
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -311,14 +314,14 @@ def get_tt_today(initial):
         port=url.port
     )
     cur = conn.cursor()
-    cur.execute("SELECT id, start_time, end_time, subject, teacher, room from time_table WHERE teacher ='{0}' ORDER BY id".format(initial))
+    cur.execute("SELECT id, start_time, end_time, subject, teacher, room from time_table WHERE teacher ='{0}' AND day='{1}' ORDER BY id".format(initial,weekday))
     regular_tt = cur.fetchall()
     if not regular_tt:
         return list(), 0
     print("yo +++++++++++++>>>>>>>>> \n", regular_tt)
     ids_to_check = tuple()
     for row in regular_tt:
-        ids_to_check = ids_to_check+(row[0], )
+        ids_to_check = ids_to_check+(row[0],)
 
     cur.execute("SELECT id_ptr, subject, teacher, room from changes WHERE id_ptr IN {0} ORDER BY id".format(ids_to_check))
     changes = cur.fetchall()
