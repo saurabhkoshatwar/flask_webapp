@@ -5,7 +5,7 @@ from wtforms import PasswordField
 
 from wtforms.validators import DataRequired
 
-import dbconn, student_auth,hash,os,re,json_gen, make_change, redis_updater
+import dbconn, student_auth,hash,os,re,json_gen, make_change, redis_updater,teacher_auth
 from flask_mail import Mail,Message
 from itsdangerous import URLSafeTimedSerializer
 
@@ -54,8 +54,21 @@ def login_handler():
 def send_email(subject,recipients,html_body):
     msg = Message(subject, recipients=recipients)
     msg.html = html_body
-    m.send(msg) 
-      
+    m.send(msg)
+
+@app.route('/api/v1/login/teacher_new', methods=["POST"])
+def login_handler_teacher():
+    data = request.get_json()
+    # print(data)   
+    try:
+        return teacher_auth.login(data["email"], data["password"])
+    except:
+        return jsonify(status=0, message='Missing fields!/Error Occured! :/'), 400
+
+'''def send_email(subject,recipients,html_body):
+    msg = Message(subject, recipients=recipients)
+    msg.html = html_body
+    m.send(msg) '''
     
 @app.route('/api/v1/forgot/', methods=["POST"])
 def send_password_reset_email():

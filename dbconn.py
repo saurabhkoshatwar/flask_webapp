@@ -263,4 +263,39 @@ def t_login(api_key):
     return name
 
 
+def login_teacher(email, hashed_password):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    api_key = None
+    cur = conn.cursor()
+    cur.execute("SELECT api_key from teacher_details WHERE email='{0}' AND pass='{1}'".format(email, hashed_password))
+    if cur.rowcount == 1:
+        row = cur.fetchone()
+        print(row[0])
+        api_key=row[0]
+        conn.close()
 
+    return api_key
+
+
+def email_already_exists_teacher(email):
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT email from teacher_details WHERE email='{0}'".format(email))
+    print(cur.rowcount)
+    to_return = False
+    if cur.rowcount > 0:
+        to_return = True
+    conn.close()
+    return to_return
